@@ -61,14 +61,16 @@ CREATE TABLE reviews
     id             SERIAL PRIMARY KEY,
     user_id        UUID     NOT NULL REFERENCES users (id),
     alternative_id INTEGER  NOT NULL REFERENCES alternatives (id),
-    rating         SMALLINT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    rating         SMALLINT NOT NULL,
     title          VARCHAR(200),
     content        TEXT,
     pros           TEXT[],
     cons           TEXT[],
     helpful        BOOLEAN     DEFAULT true,
-    timestamp      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-    edited_at       TIMESTAMPTZ
+    timestamp      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    edited_at      TIMESTAMPTZ,
+
+    CONSTRAINT chk_reviews_rating CHECK (rating >= 1 AND rating <= 5)
 );
 
 CREATE TABLE user_saved
