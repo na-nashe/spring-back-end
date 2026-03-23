@@ -1,4 +1,4 @@
-package com.na_nashe.backend;
+package com.nanashe.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
