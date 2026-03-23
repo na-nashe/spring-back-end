@@ -10,13 +10,26 @@ CREATE TABLE categories
     icon      VARCHAR(10)
 );
 
+CREATE TABLE countries
+(
+    id          SERIAL PRIMARY KEY,
+    code        CHAR(2)      NOT NULL UNIQUE,
+    name        VARCHAR(100) NOT NULL,
+    is_friendly BOOLEAN      NOT NULL
+);
+
+INSERT INTO countries (code, name, friendly)
+VALUES ('RU', 'Russia', false),
+       ('UA', 'Ukraine', true),
+       ('US', 'United States', true)
+
 CREATE TABLE products
 (
     id          SERIAL PRIMARY KEY,
     category_id INTEGER      NOT NULL REFERENCES categories (id),
     name        VARCHAR(200) NOT NULL,
     emoji       VARCHAR(10),
-    origin      VARCHAR(2) DEFAULT 'RU'
+    origin_id   INTEGER      NOT NULL REFERENCES countries (id)
 );
 
 CREATE TABLE aliases
@@ -30,7 +43,7 @@ CREATE TABLE alternatives
 (
     id            SERIAL PRIMARY KEY,
     name          VARCHAR(150) NOT NULL,
-    origin        VARCHAR(2),
+    origin_id     INTEGER      NOT NULL REFERENCES countries (id),
     rating        NUMERIC(3, 2),
     pricing_model pr_enum,
     description   TEXT,
