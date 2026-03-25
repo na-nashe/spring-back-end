@@ -7,7 +7,7 @@ CREATE TABLE categories
     id        SERIAL PRIMARY KEY,
     parent_id INTEGER REFERENCES categories (id),
     name      VARCHAR(100) NOT NULL,
-    icon      VARCHAR(10)
+    icon      VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE countries
@@ -17,11 +17,6 @@ CREATE TABLE countries
     name        VARCHAR(100) NOT NULL,
     is_friendly BOOLEAN      NOT NULL
 );
-
-INSERT INTO countries (code, name, friendly)
-VALUES ('RU', 'Russia', false),
-       ('UA', 'Ukraine', true),
-       ('US', 'United States', true)
 
 CREATE TABLE products
 (
@@ -44,7 +39,6 @@ CREATE TABLE alternatives
     id            SERIAL PRIMARY KEY,
     name          VARCHAR(150) NOT NULL,
     origin_id     INTEGER      NOT NULL REFERENCES countries (id),
-    rating        NUMERIC(3, 2),
     pricing_model pr_enum,
     description   TEXT,
     url           VARCHAR(500),
@@ -56,40 +50,4 @@ CREATE TABLE product_alternatives
     product_id     INTEGER NOT NULL REFERENCES products (id),
     alternative_id INTEGER NOT NULL REFERENCES alternatives (id),
     PRIMARY KEY (product_id, alternative_id)
-);
-
--- ——— User & Interaction Tables ———
-CREATE TABLE users
-(
-    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username      VARCHAR(50) UNIQUE  NOT NULL,
-    email         VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255)        NOT NULL,
-    avatar        TEXT,
-    joined        TIMESTAMPTZ      DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE reviews
-(
-    id             SERIAL PRIMARY KEY,
-    user_id        UUID     NOT NULL REFERENCES users (id),
-    alternative_id INTEGER  NOT NULL REFERENCES alternatives (id),
-    rating         SMALLINT NOT NULL,
-    title          VARCHAR(200),
-    content        TEXT,
-    pros           TEXT[],
-    cons           TEXT[],
-    helpful        BOOLEAN     DEFAULT true,
-    timestamp      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    edited_at      TIMESTAMPTZ,
-
-    CONSTRAINT chk_reviews_rating CHECK (rating >= 1 AND rating <= 5)
-);
-
-CREATE TABLE user_saved
-(
-    user_id        UUID REFERENCES users (id),
-    alternative_id INTEGER REFERENCES alternatives (id),
-    saved_at       TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, alternative_id)
 );
