@@ -1,5 +1,5 @@
 -- ——— Enums ———
-CREATE TYPE pricing_model_enum AS ENUM ('FREE', 'PAID', 'FREEMIUM');
+CREATE TYPE pr_enum AS ENUM ('free', 'paid', 'freemium');
 
 -- ——— Core Tables ———
 CREATE TABLE categories
