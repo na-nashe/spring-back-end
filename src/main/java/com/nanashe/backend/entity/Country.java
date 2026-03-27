@@ -14,7 +14,7 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true, columnDefinition = "CHAR(2)")
+    @Column(name = "code", columnDefinition = "bpchar", length = 2)
     private String code;
 
     @Column(nullable = false, length = 100)

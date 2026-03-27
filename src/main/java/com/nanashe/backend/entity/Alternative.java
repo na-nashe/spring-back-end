@@ -1,5 +1,6 @@
 package com.nanashe.backend.entity;
 
+import com.nanashe.backend.entity.enums.PricingModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
