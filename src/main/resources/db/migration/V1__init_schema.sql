@@ -7,7 +7,7 @@ CREATE TABLE categories
     id        SERIAL PRIMARY KEY,
     parent_id INTEGER REFERENCES categories (id),
     name      VARCHAR(100) NOT NULL,
-    icon      VARCHAR(10) NOT NULL
+    icon      VARCHAR(10)  NOT NULL
 );
 
 CREATE TABLE countries
@@ -39,7 +39,7 @@ CREATE TABLE alternatives
     id            SERIAL PRIMARY KEY,
     name          VARCHAR(150) NOT NULL,
     origin_id     INTEGER      NOT NULL REFERENCES countries (id),
-    pricing_model pr_enum,
+    pricing_model pricing_model_enum,
     description   TEXT,
     url           VARCHAR(500),
     ai_generated  BOOLEAN DEFAULT false
