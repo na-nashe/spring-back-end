@@ -2,34 +2,34 @@
 INSERT INTO categories (id, parent_id, name, icon)
 VALUES
 -- Parent Categories
-(1, NULL, 'Technologies', '🖥'),
-(2, NULL, 'Content Makers', '🎙'),
-(3, NULL, 'Video Games', '🕹'),
-(4, NULL, 'International Sponsors', '💸'),
+(1, NULL, 'Технології', '🖥'),
+(2, NULL, 'Контент-мейкери', '🎙'),
+(3, NULL, 'Відеоігри', '🕹'),
+(4, NULL, 'Міжнародні спонсори', '💸'),
 
 -- Technologies Subcategories
-(5, 1, 'Messengers', '💬'),
-(6, 1, 'Programming languages & Dev tools', '⚙️'),
-(7, 1, 'Business Software (CRM/ERP)', '💼'),
-(8, 1, 'Website Builders', '🏗️'),
-(9, 1, 'Antivirus Software', '🛡️'),
-(10, 1, 'Educational Platforms', '🎓'),
+(5, 1, 'Месенджери', '💬'),
+(6, 1, 'Мови програмування та інструменти розробки', '⚙️'),
+(7, 1, 'ПЗ для бізнесу (CRM/ERP)', '💼'),
+(8, 1, 'Конструктори сайтів', '🏗️'),
+(9, 1, 'Антивіруси', '🛡️'),
+(10, 1, 'Освітні платформи', '🎓'),
 
 -- Content Makers Subcategories
-(11, 2, 'Musicians', '🎵'),
-(12, 2, 'YouTubers & Bloggers', '📹'),
-(13, 2, 'Movies & TV Series', '🎬'),
-(14, 2, 'Online Courses', '📚'),
+(11, 2, 'Музиканти', '🎵'),
+(12, 2, 'Ютубери та блогери', '📹'),
+(13, 2, 'Фільми та серіали', '🎬'),
+(14, 2, 'Онлайн-курси', '📚'),
 
 -- Video Games Subcategories
-(15, 3, 'PC & Console Games', '🎮'),
-(16, 3, 'Mobile Games', '📱'),
+(15, 3, 'Ігри для ПК та консолей', '🎮'),
+(16, 3, 'Мобільні ігри', '📱'),
 
 -- International Sponsors Subcategories
-(17, 4, 'Food & Snacks', '🍔'),
-(18, 4, 'Cosmetics & Hygiene', '🧴'),
-(19, 4, 'Retail Chains', '🛒'),
-(20, 4, 'Electronics', '🔌');
+(17, 4, 'Їжа та снеки', '🍔'),
+(18, 4, 'Косметика та гігієна', '🧴'),
+(19, 4, 'Роздрібні мережі', '🛒'),
+(20, 4, 'Електроніка', '🔌');
 
 
 -- ——— 2. Countries ———
