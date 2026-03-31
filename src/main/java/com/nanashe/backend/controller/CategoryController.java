@@ -1,6 +1,6 @@
 package com.nanashe.backend.controller;
 
-import com.nanashe.backend.dto.CategoryDTO;
+import com.nanashe.backend.dto.CategoryDto;
 import com.nanashe.backend.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDTO> getMainCategories() {
+    public List<CategoryDto> getMainCategories() {
         return categoryService.getMainCategories();
     }
 }

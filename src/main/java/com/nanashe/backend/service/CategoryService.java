@@ -1,6 +1,6 @@
 package com.nanashe.backend.service;
 
-import com.nanashe.backend.dto.CategoryDTO;
+import com.nanashe.backend.dto.CategoryDto;
 import com.nanashe.backend.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,9 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<CategoryDTO> getMainCategories() {
+    public List<CategoryDto> getMainCategories() {
         return categoryRepository.findByParentIsNull().stream()
-                .map(c -> new CategoryDTO(c.getName(), c.getIcon()))
+                .map(c -> new CategoryDto(c.getName(), c.getIcon()))
                 .toList();
     }
 }
