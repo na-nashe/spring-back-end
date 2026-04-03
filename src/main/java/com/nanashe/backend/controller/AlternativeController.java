@@ -1,11 +1,13 @@
 package com.nanashe.backend.controller;
 
+import com.nanashe.backend.dto.AiAlternativeDto;
+import com.nanashe.backend.dto.AiGenerateRequestDto;
 import com.nanashe.backend.dto.AlternativeCountDto;
 import com.nanashe.backend.service.AlternativeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/alternatives")
@@ -17,5 +19,10 @@ public class AlternativeController {
     @GetMapping("/summary")
     public AlternativeCountDto getCount() {
         return alternativeService.getCount();
+    }
+
+    @PostMapping("/search")
+    public List<AiAlternativeDto> generateAlternatives(@RequestBody AiGenerateRequestDto request) {
+        return alternativeService.generateAlternatives(request);
     }
 }
