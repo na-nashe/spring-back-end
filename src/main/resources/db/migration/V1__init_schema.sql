@@ -38,6 +38,7 @@ CREATE TABLE alternatives
 (
     id            SERIAL PRIMARY KEY,
     name          VARCHAR(150) NOT NULL,
+    category_id   INTEGER      NOT NULL REFERENCES categories (id),
     origin_id     INTEGER      NOT NULL REFERENCES countries (id),
     pricing_model pricing_model_enum,
     description   TEXT,

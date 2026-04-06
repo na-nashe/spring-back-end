@@ -21,6 +21,10 @@ public class Alternative {
     private String name;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "origin_id", nullable = false)
     private Country origin;
 

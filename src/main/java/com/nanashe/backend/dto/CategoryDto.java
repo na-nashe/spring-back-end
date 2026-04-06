@@ -1,4 +1,4 @@
 package com.nanashe.backend.dto;
 
-public record CategoryDto(String title, String icon) {
+public record CategoryDto(Integer id, String title, String icon) {
 }
