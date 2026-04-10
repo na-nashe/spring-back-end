@@ -1,10 +1,10 @@
 package com.nanashe.backend.service;
 
 import com.nanashe.backend.client.AiServiceClient;
-import com.nanashe.backend.dto.AiAlternativeSearchResponseDto;
-import com.nanashe.backend.dto.AiGenerateRequestDto;
-import com.nanashe.backend.dto.AiGenerateSearchRequestDto;
-import com.nanashe.backend.dto.AlternativeCountDto;
+import com.nanashe.backend.dto.alternatives.request.AiGenerateRequestDto;
+import com.nanashe.backend.dto.alternatives.request.AiGenerateSearchRequestDto;
+import com.nanashe.backend.dto.alternatives.response.AiAlternativeSearchResponseDto;
+import com.nanashe.backend.dto.alternatives.response.AlternativeSummaryResponseDto;
 import com.nanashe.backend.entity.Category;
 import com.nanashe.backend.repository.AlternativeRepository;
 import com.nanashe.backend.repository.CategoryRepository;
@@ -21,8 +21,8 @@ public class AlternativeService {
     private final CategoryRepository categoryRepository;
     private final AiServiceClient aiServiceClient;
 
-    public AlternativeCountDto getCount() {
-        return new AlternativeCountDto(alternativeRepository.count());
+    public AlternativeSummaryResponseDto getCount() {
+        return new AlternativeSummaryResponseDto(alternativeRepository.count());
     }
 
     public AiAlternativeSearchResponseDto generateAlternatives(AiGenerateSearchRequestDto request) {

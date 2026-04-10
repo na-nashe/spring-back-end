@@ -1,8 +1,8 @@
 package com.nanashe.backend.controller;
 
-import com.nanashe.backend.dto.AiAlternativeSearchResponseDto;
-import com.nanashe.backend.dto.AiGenerateSearchRequestDto;
-import com.nanashe.backend.dto.AlternativeCountDto;
+import com.nanashe.backend.dto.alternatives.request.AiGenerateSearchRequestDto;
+import com.nanashe.backend.dto.alternatives.response.AiAlternativeSearchResponseDto;
+import com.nanashe.backend.dto.alternatives.response.AlternativeSummaryResponseDto;
 import com.nanashe.backend.service.AlternativeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ public class AlternativeController {
     private final AlternativeService alternativeService;
 
     @GetMapping("/summary")
-    public AlternativeCountDto getCount() {
+    public AlternativeSummaryResponseDto getCount() {
         return alternativeService.getCount();
     }
 
