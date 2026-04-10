@@ -1,6 +1,6 @@
-package com.nanashe.backend.dto;
+package com.nanashe.backend.dto.alternatives.response;
 
-public record AiAlternativeDto(
+public record AiAlternativeResponseDto(
         String name,
         String category,
         String description,
