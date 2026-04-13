@@ -33,5 +33,5 @@ CREATE TABLE reviews
     timestamp      TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- ——— 4. Indexes ———
-CREATE INDEX idx_reviews_alternative_id ON reviews (alternative_id);
+
+
