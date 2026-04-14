@@ -38,3 +38,6 @@ hs_err_pid*
 replay_pid*
 
 target/
+
+# RSA private key — never commit to VCS
+src/main/resources/certs/private.pem
