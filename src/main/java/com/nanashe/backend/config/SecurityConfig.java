@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static com.nanashe.backend.config.SecurityConstants.WHITE_LIST;
+
 @Configuration
 @EnableWebSecurity
 @Profile("!local")
@@ -21,11 +23,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/alternatives/summary",
-                                "/categories",
-                                "/categories/**"
-                        ).permitAll()
+                        .requestMatchers(WHITE_LIST.toArray(String[]::new)).permitAll()
                         .anyRequest().authenticated()
                 );
 
