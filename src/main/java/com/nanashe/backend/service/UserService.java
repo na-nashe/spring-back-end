@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -15,6 +17,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public void signup(SignupRequestDto dto) {
-        userRepository.save(new User(dto, passwordEncoder.encode(dto.password())));
+        User user = User.builder()
+                .username(dto.username())
+                .email(dto.email())
+                .passwordHash(passwordEncoder.encode(dto.password()))
+                .joined(OffsetDateTime.now())
+                .build();
+        userRepository.save(user);
     }
 }
