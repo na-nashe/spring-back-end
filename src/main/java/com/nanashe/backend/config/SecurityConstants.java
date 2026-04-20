@@ -9,6 +9,7 @@ class SecurityConstants {
 
     public final List<String> WHITE_LIST = List.of(
             "/alternatives/summary",
-            "/categories"
+            "/categories",
+            "/auth/signup"
     );
 }
