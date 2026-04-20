@@ -1,7 +1,9 @@
 package com.nanashe.backend.entity;
 
+import com.nanashe.backend.dto.auth.request.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
@@ -12,6 +14,7 @@ import java.util.UUID;
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -32,6 +35,13 @@ public class User {
 
     @Column(nullable = false)
     private OffsetDateTime joined;
+
+    public User(SignupRequestDto dto, String passwordHash) {
+        this.username = dto.username();
+        this.email = dto.email();
+        this.passwordHash = passwordHash;
+        this.joined = OffsetDateTime.now();
+    }
 
     @OneToMany(mappedBy = "user")
     private List<UserSaved> savedAlternatives;
