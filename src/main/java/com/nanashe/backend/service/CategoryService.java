@@ -15,7 +15,7 @@ public class CategoryService {
 
     public List<CategoryResponseDto> getMainCategories() {
         return categoryRepository.findByParentIsNull().stream()
-                .map(c -> new CategoryResponseDto(c.getName(), c.getIcon()))
+                .map(c -> new CategoryResponseDto(c.getId(), c.getName(), c.getIcon()))
                 .toList();
     }
 }
