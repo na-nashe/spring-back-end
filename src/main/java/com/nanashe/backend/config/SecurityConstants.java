@@ -7,7 +7,7 @@ import java.util.List;
 @UtilityClass
 class SecurityConstants {
 
-    public final List<String> WHITE_LIST = List.of(
+    public static final List<String> WHITE_LIST = List.of(
             "/alternatives/summary",
             "/categories",
             "/auth/signup"
