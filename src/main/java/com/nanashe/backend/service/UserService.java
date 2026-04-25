@@ -31,13 +31,12 @@ public class UserService {
     }
 
     public String signIn(SignInRequestDto dto) {
-        User user = userRepository.findByEmail(dto.email())
+        String token = userRepository.findByEmail(dto.email())
+                .filter(user -> passwordEncoder.matches(dto.password(), user.getPasswordHash()))
+                .map(User::getId)
+                .map(jwtService::generateAccessToken)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
-        if (!passwordEncoder.matches(dto.password(), user.getPasswordHash())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-        }
-
-        return jwtService.generateAccessToken(user.getId());
+        return "Bearer " + token;
     }
 }

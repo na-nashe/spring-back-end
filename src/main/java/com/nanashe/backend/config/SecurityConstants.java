@@ -8,9 +8,8 @@ import java.util.List;
 class SecurityConstants {
 
     public static final List<String> WHITE_LIST = List.of(
-            "/alternatives/summary",
+            "/alternatives/*",
             "/categories",
-            "/auth/signup",
-            "/auth/signin"
+            "/auth/*"
     );
 }

@@ -4,12 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.nanashe.backend.security.RsaKeyReader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
@@ -17,6 +17,9 @@ import java.util.UUID;
 public class JwtService {
 
     private final RsaKeyReader rsaKeyReader;
+
+    @Value("${access.token.expiration.time}")
+    private long accessTokenExpirationTime;
 
     public String generateAccessToken(UUID userId) {
         Algorithm algorithm = Algorithm.RSA256(
@@ -27,7 +30,7 @@ public class JwtService {
         return JWT.create()
                 .withSubject(userId.toString())
                 .withIssuedAt(Instant.now())
-                .withExpiresAt(Instant.now().plus(1, ChronoUnit.HOURS))
+                .withExpiresAt(Instant.now().plusSeconds(accessTokenExpirationTime))
                 .sign(algorithm);
     }
 }

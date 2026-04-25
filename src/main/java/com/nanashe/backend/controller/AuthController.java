@@ -26,7 +26,7 @@ public class AuthController {
     public ResponseEntity<Void> signIn(@RequestBody SignInRequestDto dto) {
         String token = userService.signIn(dto);
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .build();
     }
 }
