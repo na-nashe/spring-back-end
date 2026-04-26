@@ -1,6 +1,7 @@
 package com.nanashe.backend.service;
 
 import com.nanashe.backend.dto.auth.request.SignInRequestDto;
+import com.nanashe.backend.dto.auth.request.SignInResult;
 import com.nanashe.backend.dto.auth.request.SignUpRequestDto;
 import com.nanashe.backend.entity.User;
 import com.nanashe.backend.repository.UserRepository;
@@ -19,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     public void signUp(SignUpRequestDto dto) {
         User user = User.builder()
@@ -30,13 +32,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String signIn(SignInRequestDto dto) {
-        String token = userRepository.findByEmail(dto.email())
-                .filter(user -> passwordEncoder.matches(dto.password(), user.getPasswordHash()))
-                .map(User::getId)
-                .map(jwtService::generateAccessToken)
+    public SignInResult signIn(SignInRequestDto dto) {
+        User user = userRepository.findByEmail(dto.email())
+                .filter(u -> passwordEncoder.matches(dto.password(), u.getPasswordHash()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
-        return "Bearer " + token;
+        String accessToken = "Bearer " + jwtService.generateAccessToken(user.getId());
+        String refreshToken = refreshTokenService.createRefreshToken(user);
+        return new SignInResult(accessToken, refreshToken);
     }
 }
