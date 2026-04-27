@@ -1,7 +1,7 @@
 package com.nanashe.backend.service;
 
 import com.nanashe.backend.dto.auth.request.SignInRequestDto;
-import com.nanashe.backend.entity.SignInResult;
+import com.nanashe.backend.model.SignInResult;
 import com.nanashe.backend.dto.auth.request.SignUpRequestDto;
 import com.nanashe.backend.entity.User;
 import com.nanashe.backend.repository.UserRepository;

@@ -2,7 +2,7 @@ package com.nanashe.backend.controller;
 
 import com.nanashe.backend.dto.auth.request.SignInRequestDto;
 import com.nanashe.backend.dto.auth.request.SignUpRequestDto;
-import com.nanashe.backend.entity.SignInResult;
+import com.nanashe.backend.model.SignInResult;
 import com.nanashe.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
