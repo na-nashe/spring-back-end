@@ -1,9 +1,8 @@
 package com.nanashe.backend.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.nanashe.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
 
 @Component
@@ -25,7 +23,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private final RsaKeyReader rsaKeyReader;
+    private final JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -41,8 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = header.substring(BEARER_PREFIX.length());
 
         try {
-            Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) rsaKeyReader.getPublicKey(), null);
-            DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
+            DecodedJWT jwt = jwtService.verifyToken(token);
 
             String subject = jwt.getSubject();
             if (subject != null) {

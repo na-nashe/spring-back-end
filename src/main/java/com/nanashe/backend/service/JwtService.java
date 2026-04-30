@@ -2,6 +2,7 @@ package com.nanashe.backend.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nanashe.backend.security.RsaKeyReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,5 +33,10 @@ public class JwtService {
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plusSeconds(accessTokenExpirationTime))
                 .sign(algorithm);
+    }
+
+    public DecodedJWT verifyToken(String token) {
+        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) rsaKeyReader.getPublicKey(), null);
+        return JWT.require(algorithm).build().verify(token);
     }
 }
