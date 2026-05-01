@@ -24,14 +24,17 @@ class RefreshTokenService {
 
     @Transactional(readOnly = true)
     public UUID validateRefreshToken(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findById(token)
+
+        return refreshTokenRepository.findById(token)
+                .filter(rt -> !isTokenExpired(rt))
+                .map(RefreshToken::getUser)
+                .map(User::getId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
-        if (refreshToken.getExpiredAt().isBefore(OffsetDateTime.now())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+    }
 
-        return refreshToken.getUser().getId();
+    private boolean isTokenExpired(RefreshToken token) {
+        return token.getExpiredAt().isBefore(OffsetDateTime.now());
     }
 
     public String createRefreshToken(User user) {

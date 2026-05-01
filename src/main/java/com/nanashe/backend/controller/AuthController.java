@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+
     private final UserService userService;
 
     @Value("${refresh.token.expiration.time}")
@@ -31,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/accesstoken/refresh")
     public ResponseEntity<Void> refreshAccessToken(
-            @CookieValue(name = "refresh_token", required = false) String refreshToken) {
+            @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
         if (refreshToken == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
@@ -45,7 +47,7 @@ public class AuthController {
     public ResponseEntity<Void> signIn(@RequestBody SignInRequestDto dto) {
         SignInResult result = userService.signIn(dto);
 
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh_token", result.refreshToken())
+        ResponseCookie refreshTokenCookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, result.refreshToken())
                 .httpOnly(true)
                 .path("/")
                 .maxAge(refreshTokenExpirationTime)
