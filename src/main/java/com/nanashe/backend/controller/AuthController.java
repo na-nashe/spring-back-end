@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,6 +27,18 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public void signUp(@RequestBody SignUpRequestDto dto) {
         userService.signUp(dto);
+    }
+
+    @PostMapping("/accesstoken/refresh")
+    public ResponseEntity<Void> refreshAccessToken(
+            @CookieValue(name = "refresh_token", required = false) String refreshToken) {
+        if (refreshToken == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        String accessToken = userService.refreshAccessToken(refreshToken);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .build();
     }
 
     @PostMapping("/signin")

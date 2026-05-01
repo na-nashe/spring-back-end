@@ -39,6 +39,11 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
     }
 
+    public String refreshAccessToken(String refreshToken) {
+        return "Bearer " + jwtService.generateAccessToken(
+                refreshTokenService.validateRefreshToken(refreshToken));
+    }
+
     private SignInResult createTokenPair(User user) {
         String accessToken = "Bearer " + jwtService.generateAccessToken(user.getId());
         String refreshToken = refreshTokenService.createRefreshToken(user);

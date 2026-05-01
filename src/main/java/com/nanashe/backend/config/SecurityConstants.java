@@ -10,6 +10,7 @@ class SecurityConstants {
     public static final List<String> WHITE_LIST = List.of(
             "/alternatives/*",
             "/categories",
-            "/auth/*"
+            "/auth/*",
+            "/auth/accesstoken/refresh"
     );
 }
