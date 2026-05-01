@@ -1,6 +1,5 @@
 package com.nanashe.backend.service;
 
-import com.nanashe.backend.config.SecurityConstants;
 import com.nanashe.backend.dto.auth.request.SignInRequestDto;
 import com.nanashe.backend.model.SignInResult;
 import com.nanashe.backend.dto.auth.request.SignUpRequestDto;
@@ -41,12 +40,12 @@ public class UserService {
     }
 
     public String refreshAccessToken(String refreshToken) {
-        return SecurityConstants.BEARER_PREFIX + jwtService.generateAccessToken(
+        return jwtService.buildAccessToken(
                 refreshTokenService.validateRefreshToken(refreshToken));
     }
 
     private SignInResult createTokenPair(User user) {
-        String accessToken = SecurityConstants.BEARER_PREFIX + jwtService.generateAccessToken(user.getId());
+        String accessToken = jwtService.buildAccessToken(user.getId());
         String refreshToken = refreshTokenService.createRefreshToken(user);
         return new SignInResult(accessToken, refreshToken);
     }
