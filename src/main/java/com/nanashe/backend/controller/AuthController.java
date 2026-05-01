@@ -11,11 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
+    private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
 
     private final UserService userService;
 
@@ -28,11 +31,23 @@ public class AuthController {
         userService.signUp(dto);
     }
 
+    @PostMapping("/accesstoken/refresh")
+    public ResponseEntity<Void> refreshAccessToken(
+            @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
+        if (refreshToken == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        String accessToken = userService.refreshAccessToken(refreshToken);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .build();
+    }
+
     @PostMapping("/signin")
     public ResponseEntity<Void> signIn(@RequestBody SignInRequestDto dto) {
         SignInResult result = userService.signIn(dto);
 
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh_token", result.refreshToken())
+        ResponseCookie refreshTokenCookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, result.refreshToken())
                 .httpOnly(true)
                 .path("/")
                 .maxAge(refreshTokenExpirationTime)

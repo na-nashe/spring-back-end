@@ -3,6 +3,7 @@ package com.nanashe.backend.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.nanashe.backend.config.SecurityConstants;
 import com.nanashe.backend.security.RsaKeyReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,10 @@ public class JwtService {
 
     @Value("${access.token.expiration.time}")
     private long accessTokenExpirationTime;
+
+    public String buildAccessToken(UUID userId) {
+        return SecurityConstants.BEARER_PREFIX + generateAccessToken(userId);
+    }
 
     public String generateAccessToken(UUID userId) {
         Algorithm algorithm = Algorithm.RSA256(
