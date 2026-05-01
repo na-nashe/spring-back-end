@@ -2,6 +2,7 @@ package com.nanashe.backend.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.nanashe.backend.config.SecurityConstants;
 import com.nanashe.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,8 +22,6 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private static final String BEARER_PREFIX = "Bearer ";
-
     private final JwtService jwtService;
 
     @Override
@@ -31,12 +30,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (header == null || !header.startsWith(BEARER_PREFIX)) {
+        if (header == null || !header.startsWith(SecurityConstants.BEARER_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
 
-        String token = header.substring(BEARER_PREFIX.length());
+        String token = header.substring(SecurityConstants.BEARER_PREFIX.length());
 
         try {
             DecodedJWT jwt = jwtService.verifyToken(token);
