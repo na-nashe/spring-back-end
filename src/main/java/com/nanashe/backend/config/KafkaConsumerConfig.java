@@ -1,6 +1,6 @@
 package com.nanashe.backend.config;
 
-import com.nanashe.backend.dto.kafka.KafkaAlternativesMessageDto;
+import com.nanashe.backend.kafka.event.KafkaAlternativesEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +26,9 @@ public class KafkaConsumerConfig {
     private String autoOffsetReset;
 
     @Bean
-    public ConsumerFactory<String, KafkaAlternativesMessageDto> alternativesConsumerFactory() {
-        JsonDeserializer<KafkaAlternativesMessageDto> deserializer =
-                new JsonDeserializer<>(KafkaAlternativesMessageDto.class, false);
+    public ConsumerFactory<String, KafkaAlternativesEvent> alternativesConsumerFactory() {
+        JsonDeserializer<KafkaAlternativesEvent> deserializer =
+                new JsonDeserializer<>(KafkaAlternativesEvent.class, false);
 
         return new DefaultKafkaConsumerFactory<>(
                 Map.of(
@@ -42,8 +42,8 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaAlternativesMessageDto> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaAlternativesMessageDto> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaAlternativesEvent> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, KafkaAlternativesEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(alternativesConsumerFactory());
         return factory;

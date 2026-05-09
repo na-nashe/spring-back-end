@@ -1,6 +1,6 @@
 package com.nanashe.backend.kafka;
 
-import com.nanashe.backend.dto.kafka.KafkaAlternativesMessageDto;
+import com.nanashe.backend.kafka.event.KafkaAlternativesEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class AlternativesKafkaConsumer {
 
     @KafkaListener(topics = "alternatives", groupId = "${spring.kafka.consumer.group-id}")
-    public void consume(KafkaAlternativesMessageDto message) {
+    public void consume(KafkaAlternativesEvent message) {
         log.info("Received Kafka message: {} aliases, {} alternatives",
                 message.aliases() != null ? message.aliases().size() : 0,
                 message.alternatives() != null ? message.alternatives().size() : 0);
