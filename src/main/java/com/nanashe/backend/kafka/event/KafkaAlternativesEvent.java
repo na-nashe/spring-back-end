@@ -11,4 +11,11 @@ public record KafkaAlternativesEvent(
         String productCountry,
         List<AiAlternativeResponseDto> alternatives
 ) {
+    public boolean hasAliases() {
+        return aliases != null && !aliases.isEmpty();
+    }
+
+    public boolean hasAlternatives() {
+        return alternatives != null && !alternatives.isEmpty();
+    }
 }

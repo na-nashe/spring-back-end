@@ -1,7 +1,10 @@
 package com.nanashe.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -10,6 +13,9 @@ import java.util.List;
 @Table(name = "products")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     @Id
@@ -23,14 +29,11 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
-    @Column(length = 10)
-    private String emoji;
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "origin_id", nullable = false)
     private Country origin;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<Alias> aliases;
 
     @ManyToMany

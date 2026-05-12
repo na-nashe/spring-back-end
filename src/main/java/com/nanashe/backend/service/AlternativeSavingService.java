@@ -7,7 +7,6 @@ import com.nanashe.backend.entity.Category;
 import com.nanashe.backend.entity.Country;
 import com.nanashe.backend.entity.Product;
 import com.nanashe.backend.kafka.event.KafkaAlternativesEvent;
-import com.nanashe.backend.repository.AliasRepository;
 import com.nanashe.backend.repository.AlternativeRepository;
 import com.nanashe.backend.repository.CategoryRepository;
 import com.nanashe.backend.repository.CountryRepository;
@@ -26,7 +25,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AlternativeSavingService {
 
-    private final AliasRepository aliasRepository;
     private final AlternativeRepository alternativeRepository;
     private final CategoryRepository categoryRepository;
     private final CountryRepository countryRepository;
@@ -36,24 +34,19 @@ public class AlternativeSavingService {
     public void saveAlternatives(KafkaAlternativesEvent event) {
         log.debug("saveAlternatives called: product='{}', aliases={}, alternatives={}",
                 event.productName(),
-                event.aliases() != null ? event.aliases().size() : 0,
-                event.alternatives() != null ? event.alternatives().size() : 0);
+                event.hasAliases() ? event.aliases().size() : 0,
+                event.hasAlternatives() ? event.alternatives().size() : 0);
 
-        if (event.aliases() == null || event.aliases().isEmpty()
-                || event.alternatives() == null || event.alternatives().isEmpty()) {
+        if (!event.hasAliases() || !event.hasAlternatives()) {
             log.warn("saveAlternatives aborted: aliases or alternatives are null/empty for product='{}'", event.productName());
             return;
         }
 
-        List<Product> products = productRepository.findByAliasesNameIn(event.aliases());
-        log.debug("Found {} product(s) matching aliases {}", products.size(), event.aliases());
+        Product product = productRepository.findFirstByAliasesNameIn(event.aliases())
+                .orElseGet(() -> createProduct(event));
+        log.debug("Found product matching aliases {}: {}", event.aliases(), product != null ? product.getId() : "none");
 
-        if (products.isEmpty()) {
-            log.info("No existing products found for aliases {}, creating new product '{}'", event.aliases(), event.productName());
-            Product created = createProduct(event);
-            if (created == null) return;
-            products = List.of(created);
-        }
+        if (product == null) return;
 
         List<Alternative> saved = new ArrayList<>();
         for (AiAlternativeResponseDto dto : event.alternatives()) {
@@ -70,16 +63,14 @@ public class AlternativeSavingService {
             return;
         }
 
-        for (Product product : products) {
-            if (product.getAlternatives() == null) {
-                product.setAlternatives(new ArrayList<>());
-            }
-            product.getAlternatives().addAll(saved);
+        if (product.getAlternatives() == null) {
+            product.setAlternatives(new ArrayList<>());
         }
-        productRepository.saveAll(products);
+        product.getAlternatives().addAll(saved);
+        productRepository.save(product);
 
-        log.info("Saved {} alternative(s) and linked them to {} product(s) for aliases {}",
-                saved.size(), products.size(), event.aliases());
+        log.info("Saved {} alternative(s) and linked them to product '{}' for aliases {}",
+                saved.size(), event.productName(), event.aliases());
     }
 
     private Product createProduct(KafkaAlternativesEvent event) {
@@ -95,25 +86,21 @@ public class AlternativeSavingService {
             return null;
         }
 
-        Product product = new Product();
-        product.setName(event.productName());
-        product.setCategory(category.get());
-        product.setOrigin(country.get());
-        product = productRepository.save(product);
-        log.debug("Persisted new product id={} name='{}'", product.getId(), product.getName());
+        Product product = Product.builder()
+                .name(event.productName())
+                .category(category.get())
+                .origin(country.get())
+                .build();
 
-        List<Alias> aliases = new ArrayList<>();
-        for (String aliasName : event.aliases()) {
-            Alias alias = new Alias();
-            alias.setName(aliasName);
-            alias.setProduct(product);
-            aliases.add(alias);
-        }
-        aliasRepository.saveAll(aliases);
+        List<Alias> aliases = event.aliases().stream()
+                .map(name -> Alias.of(name, product))
+                .toList();
+        product.setAliases(aliases);
 
+        Product saved = productRepository.save(product);
         log.info("Created new product id={} name='{}' with {} alias(es): {}",
-                product.getId(), product.getName(), aliases.size(), event.aliases());
-        return product;
+                saved.getId(), saved.getName(), aliases.size(), event.aliases());
+        return saved;
     }
 
     private Optional<Alternative> toAlternative(AiAlternativeResponseDto dto) {
