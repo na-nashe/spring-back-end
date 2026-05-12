@@ -13,7 +13,6 @@ CREATE TABLE categories
 CREATE TABLE countries
 (
     id          SERIAL PRIMARY KEY,
-    code        CHAR(2)      NOT NULL UNIQUE,
     name        VARCHAR(100) NOT NULL,
     is_friendly BOOLEAN      NOT NULL
 );
@@ -23,7 +22,6 @@ CREATE TABLE products
     id          SERIAL PRIMARY KEY,
     category_id INTEGER      NOT NULL REFERENCES categories (id),
     name        VARCHAR(200) NOT NULL,
-    emoji       VARCHAR(10),
     origin_id   INTEGER      NOT NULL REFERENCES countries (id)
 );
 
