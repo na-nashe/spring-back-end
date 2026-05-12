@@ -1,4 +1,4 @@
-package com.nanashe.backend.kafka;
+package com.nanashe.backend.kafka.consumer;
 
 import com.nanashe.backend.kafka.event.KafkaAlternativesEvent;
 import lombok.extern.slf4j.Slf4j;

@@ -27,17 +27,14 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, KafkaAlternativesEvent> alternativesConsumerFactory() {
-        JsonDeserializer<KafkaAlternativesEvent> deserializer =
-                new JsonDeserializer<>(KafkaAlternativesEvent.class, false);
+
 
         return new DefaultKafkaConsumerFactory<>(
                 Map.of(
                         ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
                         ConsumerConfig.GROUP_ID_CONFIG, groupId,
                         ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset
-                ),
-                new StringDeserializer(),
-                deserializer
+                )
         );
     }
 

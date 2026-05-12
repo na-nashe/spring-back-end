@@ -6,6 +6,9 @@ import java.util.List;
 
 public record KafkaAlternativesEvent(
         List<String> aliases,
+        String productName,
+        String productCategory,
+        String productCountry,
         List<AiAlternativeResponseDto> alternatives
 ) {
 }
