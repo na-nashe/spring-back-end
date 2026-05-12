@@ -33,7 +33,8 @@ public class Product {
     @JoinColumn(name = "origin_id", nullable = false)
     private Country origin;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "product_id", nullable = false)
     private List<Alias> aliases;
 
     @ManyToMany

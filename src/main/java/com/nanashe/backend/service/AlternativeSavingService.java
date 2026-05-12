@@ -86,18 +86,16 @@ public class AlternativeSavingService {
             return null;
         }
 
-        Product product = Product.builder()
+        List<Alias> aliases = event.aliases().stream()
+                .map(Alias::fromString)
+                .toList();
+
+        Product saved = productRepository.save(Product.builder()
                 .name(event.productName())
                 .category(category.get())
                 .origin(country.get())
-                .build();
-
-        List<Alias> aliases = event.aliases().stream()
-                .map(name -> Alias.of(name, product))
-                .toList();
-        product.setAliases(aliases);
-
-        Product saved = productRepository.save(product);
+                .aliases(aliases)
+                .build());
         log.info("Created new product id={} name='{}' with {} alias(es): {}",
                 saved.getId(), saved.getName(), aliases.size(), event.aliases());
         return saved;
