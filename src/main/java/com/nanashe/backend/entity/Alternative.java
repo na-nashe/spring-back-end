@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Table(name = "alternatives")
 @Getter
@@ -46,7 +44,4 @@ public class Alternative {
 
     @Column(name = "ai_generated")
     private Boolean aiGenerated;
-
-    @ManyToMany(mappedBy = "alternatives")
-    private List<Product> products;
 }

@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.HashSet;
@@ -55,29 +54,24 @@ public class AlternativeSavingService {
                 .toArray(String[]::new);
         Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
 
-        List<Alternative> saved = new ArrayList<>();
-        for (AiAlternativeResponseDto dto : event.alternatives()) {
-            if (!newNames.contains(dto.name())) {
-                log.debug("Alternative '{}' already exists, skipping", dto.name());
-                continue;
-            }
-            log.debug("Saving new alternative '{}'", dto.name());
-            toAlternative(dto).ifPresent(alt -> saved.add(alternativeRepository.save(alt)));
-        }
+        List<Alternative> newAlternatives = event.alternatives()
+                .stream()
+                .filter(alternative -> newNames.contains(alternative.name()))
+                .map(this::toAlternative)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
 
-        if (saved.isEmpty()) {
+        if (newAlternatives.isEmpty()) {
             log.info("No new alternatives to link for product='{}', all skipped", event.productName());
             return;
         }
 
-        if (product.getAlternatives() == null) {
-            product.setAlternatives(new ArrayList<>());
-        }
-        product.getAlternatives().addAll(saved);
+        product.addAlternatives(newAlternatives);
         productRepository.save(product);
 
         log.info("Saved {} alternative(s) and linked them to product '{}' for aliases {}",
-                saved.size(), event.productName(), event.aliases());
+                newAlternatives.size(), event.productName(), event.aliases());
     }
 
     private Product createProduct(KafkaAlternativesEvent event) {

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,11 +38,18 @@ public class Product {
     @JoinColumn(name = "product_id", nullable = false)
     private List<Alias> aliases;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "product_alternatives",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "alternative_id")
     )
     private List<Alternative> alternatives;
+
+    public void addAlternatives(List<Alternative> alternatives) {
+        if (this.alternatives == null) {
+            this.alternatives = new ArrayList<>();
+        }
+        this.alternatives.addAll(alternatives);
+    }
 }
