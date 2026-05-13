@@ -28,7 +28,7 @@ class RefreshTokenService {
                 .filter(rt -> !isTokenExpired(rt))
                 .map(RefreshToken::getUser)
                 .map(User::getId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session expired, please sign in again"));
     }
 
     private boolean isTokenExpired(RefreshToken token) {

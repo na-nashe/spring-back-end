@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,7 +28,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public void signUp(@RequestBody SignUpRequestDto dto) {
+    public void signUp(@Valid @RequestBody SignUpRequestDto dto) {
         userService.signUp(dto);
     }
 
@@ -35,7 +36,7 @@ public class AuthController {
     public ResponseEntity<Void> refreshAccessToken(
             @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
         if (refreshToken == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session expired, please sign in again");
         }
         String accessToken = userService.refreshAccessToken(refreshToken);
         return ResponseEntity.ok()

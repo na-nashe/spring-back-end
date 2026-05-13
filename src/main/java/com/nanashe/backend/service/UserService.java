@@ -23,6 +23,12 @@ public class UserService {
     private final RefreshTokenService refreshTokenService;
 
     public void signUp(SignUpRequestDto dto) {
+        if (userRepository.existsByEmail(dto.email())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists");
+        }
+        if (userRepository.existsByUsername(dto.username())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This username is already taken");
+        }
         User user = User.builder()
                 .username(dto.username())
                 .email(dto.email())
