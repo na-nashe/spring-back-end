@@ -2,15 +2,19 @@ package com.nanashe.backend.entity;
 
 import com.nanashe.backend.entity.enums.PricingModel;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name = "alternatives")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Alternative {
 
     @Id
@@ -40,7 +44,4 @@ public class Alternative {
 
     @Column(name = "ai_generated")
     private Boolean aiGenerated;
-
-    @ManyToMany(mappedBy = "alternatives")
-    private List<Product> products;
 }
