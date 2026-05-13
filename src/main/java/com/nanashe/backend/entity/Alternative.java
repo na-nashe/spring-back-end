@@ -2,7 +2,10 @@ package com.nanashe.backend.entity;
 
 import com.nanashe.backend.entity.enums.PricingModel;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,6 +14,9 @@ import java.util.List;
 @Table(name = "alternatives")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Alternative {
 
     @Id

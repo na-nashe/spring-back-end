@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -48,9 +50,14 @@ public class AlternativeSavingService {
 
         if (product == null) return;
 
+        String[] names = event.alternatives().stream()
+                .map(AiAlternativeResponseDto::name)
+                .toArray(String[]::new);
+        Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
+
         List<Alternative> saved = new ArrayList<>();
         for (AiAlternativeResponseDto dto : event.alternatives()) {
-            if (alternativeRepository.existsByNameIgnoreCase(dto.name())) {
+            if (!newNames.contains(dto.name())) {
                 log.debug("Alternative '{}' already exists, skipping", dto.name());
                 continue;
             }
@@ -96,6 +103,7 @@ public class AlternativeSavingService {
                 .origin(country.get())
                 .aliases(aliases)
                 .build());
+                
         log.info("Created new product id={} name='{}' with {} alias(es): {}",
                 saved.getId(), saved.getName(), aliases.size(), event.aliases());
         return saved;
@@ -114,13 +122,14 @@ public class AlternativeSavingService {
             return Optional.empty();
         }
 
-        Alternative alt = new Alternative();
-        alt.setName(dto.name());
-        alt.setCategory(category.get());
-        alt.setOrigin(country.get());
-        alt.setDescription(dto.description());
-        alt.setUrl(dto.url());
-        alt.setAiGenerated(true);
+        Alternative alt = Alternative.builder()
+                .name(dto.name())
+                .category(category.get())
+                .origin(country.get())
+                .description(dto.description())
+                .url(dto.url())
+                .aiGenerated(true)
+                .build();
         log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), dto.category(), dto.country());
         return Optional.of(alt);
     }
