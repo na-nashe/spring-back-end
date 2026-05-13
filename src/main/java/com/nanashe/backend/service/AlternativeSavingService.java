@@ -49,18 +49,7 @@ public class AlternativeSavingService {
 
         if (product == null) return;
 
-        String[] names = event.alternatives().stream()
-                .map(AiAlternativeResponseDto::name)
-                .toArray(String[]::new);
-        Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
-
-        List<Alternative> newAlternatives = event.alternatives()
-                .stream()
-                .filter(alternative -> newNames.contains(alternative.name()))
-                .map(this::toAlternative)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+        List<Alternative> newAlternatives = findNewAlternatives(event);
 
         if (newAlternatives.isEmpty()) {
             log.info("No new alternatives to link for product='{}', all skipped", event.productName());
@@ -101,6 +90,21 @@ public class AlternativeSavingService {
         log.info("Created new product id={} name='{}' with {} alias(es): {}",
                 saved.getId(), saved.getName(), aliases.size(), event.aliases());
         return saved;
+    }
+
+    private List<Alternative> findNewAlternatives(KafkaAlternativesEvent event) {
+        String[] names = event.alternatives().stream()
+                .map(AiAlternativeResponseDto::name)
+                .toArray(String[]::new);
+        Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
+
+        return event.alternatives()
+                .stream()
+                .filter(alternative -> newNames.contains(alternative.name()))
+                .map(this::toAlternative)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
     }
 
     private Optional<Alternative> toAlternative(AiAlternativeResponseDto dto) {
