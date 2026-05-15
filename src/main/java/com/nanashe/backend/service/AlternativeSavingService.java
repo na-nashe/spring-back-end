@@ -1,6 +1,6 @@
 package com.nanashe.backend.service;
 
-import com.nanashe.backend.dto.alternatives.response.AiAlternativeResponseDto;
+import com.nanashe.backend.dto.alternatives.response.AlternativeResponseDto;
 import com.nanashe.backend.entity.Alias;
 import com.nanashe.backend.entity.Alternative;
 import com.nanashe.backend.entity.Category;
@@ -43,7 +43,7 @@ public class AlternativeSavingService {
             return;
         }
 
-        Product product = productRepository.findFirstByAliasesNameIn(event.aliases())
+        Product product = productRepository.findByAliasesNameIn(event.aliases())
                 .orElseGet(() -> createProduct(event));
         log.debug("Found product matching aliases {}: {}", event.aliases(), product != null ? product.getId() : "none");
 
@@ -94,29 +94,29 @@ public class AlternativeSavingService {
 
     private List<Alternative> findNewAlternatives(KafkaAlternativesEvent event) {
         String[] names = event.alternatives().stream()
-                .map(AiAlternativeResponseDto::name)
+                .map(AlternativeResponseDto::name)
                 .toArray(String[]::new);
         Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
 
         return event.alternatives()
                 .stream()
                 .filter(alternative -> newNames.contains(alternative.name()))
-                .map(this::toAlternative)
+                .map(dto -> toAlternative(dto, event))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
     }
 
-    private Optional<Alternative> toAlternative(AiAlternativeResponseDto dto) {
+    private Optional<Alternative> toAlternative(AlternativeResponseDto dto, KafkaAlternativesEvent event) {
         log.debug("toAlternative: resolving category='{}', country='{}' for alternative='{}'",
-                dto.category(), dto.country(), dto.name());
+                event.productCategory(), dto.country(), dto.name());
 
-        Optional<Category> category = categoryRepository.findByNameIgnoreCase(dto.category());
+        Optional<Category> category = categoryRepository.findByNameIgnoreCase(event.productCategory());
         Optional<Country> country = countryRepository.findByNameIgnoreCase(dto.country());
 
         if (category.isEmpty() || country.isEmpty()) {
             log.warn("Skipping alternative '{}': category='{}' found={}, country='{}' found={}",
-                    dto.name(), dto.category(), category.isPresent(), dto.country(), country.isPresent());
+                    dto.name(), event.productCategory(), category.isPresent(), dto.country(), country.isPresent());
             return Optional.empty();
         }
 
@@ -128,7 +128,7 @@ public class AlternativeSavingService {
                 .url(dto.url())
                 .aiGenerated(true)
                 .build();
-        log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), dto.category(), dto.country());
+        log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), event.productCategory(), dto.country());
         return Optional.of(alt);
     }
 }
