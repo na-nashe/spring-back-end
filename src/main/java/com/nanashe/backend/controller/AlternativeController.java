@@ -20,7 +20,7 @@ public class AlternativeController {
     }
 
     @PostMapping("/search")
-    public AlternativeSearchResponseDto generateAlternatives(@RequestBody SearchRequestDto request) {
+    public AlternativeSearchResponseDto findAlternatives(@RequestBody SearchRequestDto request) {
         return alternativeService.findAlternatives(request);
     }
 }
