@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    Optional<Product> findFirstByAliasesNameIn(List<String> names);
+    Optional<Product> findByAliasesName(String name);
+    Optional<Product> findByAliasesNameIn(List<String> names);
 }

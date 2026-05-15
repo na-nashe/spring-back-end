@@ -2,8 +2,8 @@ package com.nanashe.backend.dto.alternatives.response;
 
 import java.util.List;
 
-public record AiAlternativeSearchResponseDto(
+public record AlternativeSearchResponseDto(
         String message,
-        List<AiAlternativeResponseDto> alternatives
+        List<AlternativeResponseDto> alternatives
 ) {
 }

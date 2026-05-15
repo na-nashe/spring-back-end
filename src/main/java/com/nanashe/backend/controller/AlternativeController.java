@@ -1,7 +1,7 @@
 package com.nanashe.backend.controller;
 
-import com.nanashe.backend.dto.alternatives.request.AiGenerateSearchRequestDto;
-import com.nanashe.backend.dto.alternatives.response.AiAlternativeSearchResponseDto;
+import com.nanashe.backend.dto.alternatives.request.SearchRequestDto;
+import com.nanashe.backend.dto.alternatives.response.AlternativeSearchResponseDto;
 import com.nanashe.backend.dto.alternatives.response.AlternativeSummaryResponseDto;
 import com.nanashe.backend.service.AlternativeService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class AlternativeController {
     }
 
     @PostMapping("/search")
-    public AiAlternativeSearchResponseDto generateAlternatives(@RequestBody AiGenerateSearchRequestDto request) {
-        return alternativeService.generateAlternatives(request);
+    public AlternativeSearchResponseDto generateAlternatives(@RequestBody SearchRequestDto request) {
+        return alternativeService.findAlternatives(request);
     }
 }

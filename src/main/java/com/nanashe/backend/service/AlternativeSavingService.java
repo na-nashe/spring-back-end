@@ -1,6 +1,6 @@
 package com.nanashe.backend.service;
 
-import com.nanashe.backend.dto.alternatives.response.AiAlternativeResponseDto;
+import com.nanashe.backend.dto.alternatives.response.AlternativeResponseDto;
 import com.nanashe.backend.entity.Alias;
 import com.nanashe.backend.entity.Alternative;
 import com.nanashe.backend.entity.Category;
@@ -43,7 +43,7 @@ public class AlternativeSavingService {
             return;
         }
 
-        Product product = productRepository.findFirstByAliasesNameIn(event.aliases())
+        Product product = productRepository.findByAliasesNameIn(event.aliases())
                 .orElseGet(() -> createProduct(event));
         log.debug("Found product matching aliases {}: {}", event.aliases(), product != null ? product.getId() : "none");
 
@@ -94,7 +94,7 @@ public class AlternativeSavingService {
 
     private List<Alternative> findNewAlternatives(KafkaAlternativesEvent event) {
         String[] names = event.alternatives().stream()
-                .map(AiAlternativeResponseDto::name)
+                .map(AlternativeResponseDto::name)
                 .toArray(String[]::new);
         Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
 
@@ -107,7 +107,7 @@ public class AlternativeSavingService {
                 .toList();
     }
 
-    private Optional<Alternative> toAlternative(AiAlternativeResponseDto dto, KafkaAlternativesEvent event) {
+    private Optional<Alternative> toAlternative(AlternativeResponseDto dto, KafkaAlternativesEvent event) {
         log.debug("toAlternative: resolving category='{}', country='{}' for alternative='{}'",
                 event.productCategory(), dto.country(), dto.name());
 
