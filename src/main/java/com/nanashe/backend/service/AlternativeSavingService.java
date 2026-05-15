@@ -101,22 +101,22 @@ public class AlternativeSavingService {
         return event.alternatives()
                 .stream()
                 .filter(alternative -> newNames.contains(alternative.name()))
-                .map(this::toAlternative)
+                .map(dto -> toAlternative(dto, event))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
     }
 
-    private Optional<Alternative> toAlternative(AiAlternativeResponseDto dto) {
+    private Optional<Alternative> toAlternative(AiAlternativeResponseDto dto, KafkaAlternativesEvent event) {
         log.debug("toAlternative: resolving category='{}', country='{}' for alternative='{}'",
-                dto.category(), dto.country(), dto.name());
+                event.productCategory(), dto.country(), dto.name());
 
-        Optional<Category> category = categoryRepository.findByNameIgnoreCase(dto.category());
+        Optional<Category> category = categoryRepository.findByNameIgnoreCase(event.productCategory());
         Optional<Country> country = countryRepository.findByNameIgnoreCase(dto.country());
 
         if (category.isEmpty() || country.isEmpty()) {
             log.warn("Skipping alternative '{}': category='{}' found={}, country='{}' found={}",
-                    dto.name(), dto.category(), category.isPresent(), dto.country(), country.isPresent());
+                    dto.name(), event.productCategory(), category.isPresent(), dto.country(), country.isPresent());
             return Optional.empty();
         }
 
@@ -128,7 +128,7 @@ public class AlternativeSavingService {
                 .url(dto.url())
                 .aiGenerated(true)
                 .build();
-        log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), dto.category(), dto.country());
+        log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), event.productCategory(), dto.country());
         return Optional.of(alt);
     }
 }
