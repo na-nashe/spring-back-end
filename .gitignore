@@ -11,6 +11,7 @@
 
 # IDE configuration folder
 .idea/
+.vscode
 
 # Compiled class file
 *.class
