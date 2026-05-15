@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,19 +31,25 @@ public class AlternativeService {
         return new AlternativeSummaryResponseDto(alternativeRepository.count());
     }
 
-    @Transactional(readOnly = true)
     public AlternativeSearchResponseDto findAlternatives(SearchRequestDto request) {
-        Optional<Product> product = productRepository.findByAliasesName(request.productName());
-        if (product.isPresent() && product.get().getAlternatives() != null && !product.get().getAlternatives().isEmpty()) {
-            List<AlternativeResponseDto> cached = product.get().getAlternatives().stream()
-                    .map(this::toResponseDto)
-                    .toList();
-            return new AlternativeSearchResponseDto("Знайшли альтернативи для Вас!", cached);
-        }
+        return productRepository.findByAliasesName(request.productName())
+                .filter(Product::hasAlternatives)
+                .map(this::getAlternativesFromProduct)
+                .orElseGet(() -> getAlternativesFromAIService(request));
+    }
+
+    private AlternativeSearchResponseDto getAlternativesFromAIService(SearchRequestDto request) {
         List<String> categories = categoryRepository.findByChildrenIsEmpty().stream()
                 .map(Category::getName)
                 .toList();
         return aiServiceClient.generateAlternatives(new AiGenerateRequestDto(request.productName(), categories));
+    }
+
+    private AlternativeSearchResponseDto getAlternativesFromProduct(Product product) {
+        List<AlternativeResponseDto> cached = product.getAlternatives().stream()
+                .map(this::toResponseDto)
+                .toList();
+        return new AlternativeSearchResponseDto("Знайшли альтернативи для Вас!", cached);
     }
 
     private AlternativeResponseDto toResponseDto(Alternative alt) {
