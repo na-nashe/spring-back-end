@@ -1,7 +1,7 @@
 package com.nanashe.backend.client;
 
 import com.nanashe.backend.dto.alternatives.request.AiGenerateRequestDto;
-import com.nanashe.backend.dto.alternatives.response.AiAlternativeSearchResponseDto;
+import com.nanashe.backend.dto.alternatives.response.AlternativeSearchResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AiServiceClient {
 
     @PostMapping("/generate")
-    AiAlternativeSearchResponseDto generateAlternatives(@RequestBody AiGenerateRequestDto request);
+    AlternativeSearchResponseDto generateAlternatives(@RequestBody AiGenerateRequestDto request);
 }

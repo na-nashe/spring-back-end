@@ -55,12 +55,12 @@ VALUES
 (41, 5, 'Туристичні сервіси та готелі', '🏨');
 
 -- --- 2. Countries ---
-INSERT INTO countries (id, code, name, is_friendly)
-VALUES (1, 'RU', 'Russia', false),
-       (2, 'UA', 'Ukraine', true),
-       (3, 'US', 'United States', true),
-       (4, 'PL', 'Poland', true),
-       (5, 'CH', 'Switzerland', true);
+INSERT INTO countries (id, name, is_friendly)
+VALUES (1, 'Russia', false),
+       (2, 'Ukraine', true),
+       (3, 'United States', true),
+       (4, 'Poland', true),
+       (5, 'Switzerland', true);
 
 -- --- 3. Reset Sequences ---
 -- Updates the PostgreSQL internal counters so future inserts don't throw primary key errors.

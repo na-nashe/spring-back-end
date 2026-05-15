@@ -46,6 +46,10 @@ public class Product {
     )
     private List<Alternative> alternatives;
 
+    public boolean hasAlternatives() {
+        return alternatives != null && !alternatives.isEmpty();
+    }
+
     public void addAlternatives(List<Alternative> alternatives) {
         if (this.alternatives == null) {
             this.alternatives = new ArrayList<>();
