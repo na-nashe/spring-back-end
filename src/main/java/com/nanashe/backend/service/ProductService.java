@@ -16,21 +16,21 @@ public class ProductService {
 
     public List<ProductResponseDto> getProducts() {
         return productRepository.findAll().stream()
-                .map(p -> new ProductResponseDto(
-                        p.getId(),
-                        p.getName(),
-                        p.getCategory().getName(),
-                        p.getOrigin().getName(),
-                        p.getAliases().stream().map(a -> a.getName()).toList(),
-                        p.getAlternatives().stream()
-                                .map(alt -> new AlternativeResponseDto(
-                                        alt.getName(),
-                                        alt.getDescription(),
-                                        alt.getUrl(),
-                                        alt.getOrigin().getName()
-                                ))
-                                .toList()
-                ))
+                .map(p -> ProductResponseDto.builder()
+                        .id(p.getId())
+                        .name(p.getName())
+                        .category(p.getCategoryName())
+                        .origin(p.getOriginName())
+                        .aliases(p.getAliasesAsStrings())
+                        .alternatives(p.getAlternatives().stream()
+                                .map(alt -> AlternativeResponseDto.builder()
+                                        .name(alt.getName())
+                                        .description(alt.getDescription())
+                                        .url(alt.getUrl())
+                                        .country(alt.getOrigin().getName())
+                                        .build())
+                                .toList())
+                        .build())
                 .toList();
     }
 }
