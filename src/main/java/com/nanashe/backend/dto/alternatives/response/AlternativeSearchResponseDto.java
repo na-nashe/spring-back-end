@@ -7,6 +7,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record AlternativeSearchResponseDto(
         String message,
+        String productName,
         List<AlternativeResponseDto> alternatives
 ) {
 }
