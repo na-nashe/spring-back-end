@@ -3,10 +3,14 @@ package com.nanashe.backend.dto.alternatives.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@Builder
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AlternativeResponseDto {
     private String name;
     private String description;
