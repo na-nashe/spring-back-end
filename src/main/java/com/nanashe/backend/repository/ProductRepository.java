@@ -10,4 +10,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Optional<Product> findByAliasesName(String name);
     Optional<Product> findByAliasesNameIn(List<String> names);
+    List<Product> findByCategoryId(Integer categoryId);
 }
