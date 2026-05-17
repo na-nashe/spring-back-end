@@ -46,6 +46,18 @@ public class Product {
     )
     private List<Alternative> alternatives;
 
+    public String getCategoryName() {
+        return category.getName();
+    }
+
+    public String getOriginName() {
+        return origin.getName();
+    }
+
+    public List<String> getAliasesAsStrings() {
+        return aliases.stream().map(Alias::getName).toList();
+    }
+
     public boolean hasAlternatives() {
         return alternatives != null && !alternatives.isEmpty();
     }

@@ -14,7 +14,6 @@ import com.nanashe.backend.repository.CategoryRepository;
 import com.nanashe.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class AlternativeService {
         List<AlternativeResponseDto> cached = product.getAlternatives().stream()
                 .map(this::toResponseDto)
                 .toList();
-        return new AlternativeSearchResponseDto("Знайшли альтернативи для Вас!", cached);
+        return new AlternativeSearchResponseDto("Знайшли альтернативи для Вас!", product.getName(), cached);
     }
 
     private AlternativeResponseDto toResponseDto(Alternative alt) {
