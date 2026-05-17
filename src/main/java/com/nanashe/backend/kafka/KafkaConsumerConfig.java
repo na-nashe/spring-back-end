@@ -1,5 +1,6 @@
 package com.nanashe.backend.kafka;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nanashe.backend.kafka.event.KafkaAlternativesEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -29,9 +30,11 @@ public class KafkaConsumerConfig {
     private String autoOffsetReset;
 
     @Bean
-    public ConsumerFactory<String, KafkaAlternativesEvent> consumerFactory(ObjectMapper objectMapper) {
+    public ConsumerFactory<String, KafkaAlternativesEvent> consumerFactory() {
+        ObjectMapper mapper = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         JsonDeserializer<KafkaAlternativesEvent> deserializer =
-                new JsonDeserializer<>(KafkaAlternativesEvent.class, objectMapper);
+                new JsonDeserializer<>(KafkaAlternativesEvent.class, mapper);
         deserializer.setUseTypeHeaders(false);
         deserializer.addTrustedPackages("*");
 
