@@ -1,12 +1,9 @@
 package com.nanashe.backend.controller;
 
-import com.nanashe.backend.dto.alternatives.response.ProductResponseDto;
 import com.nanashe.backend.dto.categories.response.CategoryResponseDto;
 import com.nanashe.backend.service.CategoryService;
-import com.nanashe.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
