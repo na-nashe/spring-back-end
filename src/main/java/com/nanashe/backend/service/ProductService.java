@@ -2,9 +2,13 @@ package com.nanashe.backend.service;
 
 import com.nanashe.backend.dto.alternatives.response.AlternativeResponseDto;
 import com.nanashe.backend.dto.alternatives.response.ProductResponseDto;
+import com.nanashe.backend.entity.Product;
+import com.nanashe.backend.repository.CategoryRepository;
 import com.nanashe.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -13,9 +17,21 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<ProductResponseDto> getProducts() {
-        return productRepository.findAll().stream()
+        return toResponseDtos(productRepository.findAll());
+    }
+
+    public List<ProductResponseDto> getProductsByCategory(Integer categoryId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
+        }
+        return toResponseDtos(productRepository.findByCategoryId(categoryId));
+    }
+
+    private List<ProductResponseDto> toResponseDtos(List<Product> products) {
+        return products.stream()
                 .map(p -> ProductResponseDto.builder()
                         .id(p.getId())
                         .name(p.getName())
