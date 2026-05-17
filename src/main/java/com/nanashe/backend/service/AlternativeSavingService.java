@@ -94,13 +94,13 @@ public class AlternativeSavingService {
 
     private List<Alternative> findNewAlternatives(KafkaAlternativesEvent event) {
         String[] names = event.alternatives().stream()
-                .map(AlternativeResponseDto::name)
+                .map(AlternativeResponseDto::getName)
                 .toArray(String[]::new);
         Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
 
         return event.alternatives()
                 .stream()
-                .filter(alternative -> newNames.contains(alternative.name()))
+                .filter(alternative -> newNames.contains(alternative.getName()))
                 .map(dto -> toAlternative(dto, event))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -109,26 +109,26 @@ public class AlternativeSavingService {
 
     private Optional<Alternative> toAlternative(AlternativeResponseDto dto, KafkaAlternativesEvent event) {
         log.debug("toAlternative: resolving category='{}', country='{}' for alternative='{}'",
-                event.productCategory(), dto.country(), dto.name());
+                event.productCategory(), dto.getCountry(), dto.getName());
 
         Optional<Category> category = categoryRepository.findByNameIgnoreCase(event.productCategory());
-        Optional<Country> country = countryRepository.findByNameIgnoreCase(dto.country());
+        Optional<Country> country = countryRepository.findByNameIgnoreCase(dto.getCountry());
 
         if (category.isEmpty() || country.isEmpty()) {
             log.warn("Skipping alternative '{}': category='{}' found={}, country='{}' found={}",
-                    dto.name(), event.productCategory(), category.isPresent(), dto.country(), country.isPresent());
+                    dto.getName(), event.productCategory(), category.isPresent(), dto.getCountry(), country.isPresent());
             return Optional.empty();
         }
 
         Alternative alt = Alternative.builder()
-                .name(dto.name())
+                .name(dto.getName())
                 .category(category.get())
                 .origin(country.get())
-                .description(dto.description())
-                .url(dto.url())
+                .description(dto.getDescription())
+                .url(dto.getUrl())
                 .aiGenerated(true)
                 .build();
-        log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), event.productCategory(), dto.country());
+        log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), event.productCategory(), dto.getCountry());
         return Optional.of(alt);
     }
 }
