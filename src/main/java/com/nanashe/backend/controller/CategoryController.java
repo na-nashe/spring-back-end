@@ -18,15 +18,9 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final ProductService productService;
 
     @GetMapping
     public List<CategoryResponseDto> getMainCategories() {
         return categoryService.getMainCategories();
-    }
-
-    @GetMapping("/{categoryId}/products")
-    public List<ProductResponseDto> getProductsByCategory(@PathVariable Integer categoryId) {
-        return productService.getProductsByCategory(categoryId);
     }
 }
