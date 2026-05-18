@@ -79,7 +79,7 @@ public class AlternativeSavingService {
                     log.info("Creating new country '{}'", event.productCountry());
                     return countryRepository.save(Country.builder()
                             .name(event.productCountry())
-                            .isFriendly(true)
+                            .isFriendly(false)
                             .build());
                 });
 
@@ -119,18 +119,26 @@ public class AlternativeSavingService {
                 event.productCategory(), dto.getCountry(), dto.getName());
 
         Optional<Category> category = categoryRepository.findByNameIgnoreCase(event.productCategory());
-        Optional<Country> country = countryRepository.findByNameIgnoreCase(dto.getCountry());
 
-        if (category.isEmpty() || country.isEmpty()) {
-            log.warn("Skipping alternative '{}': category='{}' found={}, country='{}' found={}",
-                    dto.getName(), event.productCategory(), category.isPresent(), dto.getCountry(), country.isPresent());
+        if (category.isEmpty()) {
+            log.warn("Skipping alternative '{}': category='{}' not found",
+                    dto.getName(), event.productCategory());
             return Optional.empty();
         }
+
+        Country country = countryRepository.findByNameIgnoreCase(dto.getCountry())
+                .orElseGet(() -> {
+                    log.info("Creating new country '{}'", dto.getCountry());
+                    return countryRepository.save(Country.builder()
+                            .name(dto.getCountry())
+                            .isFriendly(true)
+                            .build());
+                });
 
         Alternative alt = Alternative.builder()
                 .name(dto.getName())
                 .category(category.get())
-                .origin(country.get())
+                .origin(country)
                 .description(dto.getDescription())
                 .url(dto.getUrl())
                 .aiGenerated(true)
