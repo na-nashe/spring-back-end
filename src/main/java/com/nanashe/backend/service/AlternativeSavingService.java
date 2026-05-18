@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,7 +57,8 @@ public class AlternativeSavingService {
             return;
         }
 
-        product.addAlternatives(newAlternatives);
+        List<Alternative> savedAlternatives = alternativeRepository.saveAll(newAlternatives);
+        product.addAlternatives(savedAlternatives);
         productRepository.save(product);
 
         log.info("Saved {} alternative(s) and linked them to product '{}' for aliases {}",
@@ -102,12 +104,16 @@ public class AlternativeSavingService {
     private List<Alternative> findNewAlternatives(KafkaAlternativesEvent event) {
         String[] names = event.alternatives().stream()
                 .map(AlternativeResponseDto::getName)
+                .filter(Objects::nonNull)
                 .toArray(String[]::new);
+
+        if (names.length == 0) return List.of();
+
         Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
 
         return event.alternatives()
                 .stream()
-                .filter(alternative -> newNames.contains(alternative.getName()))
+                .filter(alternative -> alternative.getName() != null && newNames.contains(alternative.getName()))
                 .map(dto -> toAlternative(dto, event))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
