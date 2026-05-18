@@ -60,7 +60,8 @@ public class AlternativeService {
                 alt.getName(),
                 alt.getDescription(),
                 alt.getUrl(),
-                alt.getOrigin().getName()
+                alt.getOrigin().getName(),
+                alt.getPricingModel()
         );
     }
 }

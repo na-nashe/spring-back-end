@@ -141,6 +141,7 @@ public class AlternativeSavingService {
                 .origin(country)
                 .description(dto.getDescription())
                 .url(dto.getUrl())
+                .pricingModel(dto.getPricingModel())
                 .aiGenerated(true)
                 .build();
         log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), event.productCategory(), dto.getCountry());
