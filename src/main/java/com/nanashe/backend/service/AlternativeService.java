@@ -9,6 +9,7 @@ import com.nanashe.backend.dto.alternatives.response.AlternativeSummaryResponseD
 import com.nanashe.backend.entity.Alternative;
 import com.nanashe.backend.entity.Category;
 import com.nanashe.backend.entity.Product;
+import com.nanashe.backend.entity.enums.PricingModel;
 import com.nanashe.backend.repository.AlternativeRepository;
 import com.nanashe.backend.repository.CategoryRepository;
 import com.nanashe.backend.repository.ProductRepository;
@@ -41,7 +42,10 @@ public class AlternativeService {
         List<String> categories = categoryRepository.findByChildrenIsEmpty().stream()
                 .map(Category::getName)
                 .toList();
-        return aiServiceClient.generateAlternatives(new AiGenerateRequestDto(request.productName(), categories));
+        List<String> pricingModels = List.of(PricingModel.values()).stream()
+                .map(Enum::name)
+                .toList();
+        return aiServiceClient.generateAlternatives(new AiGenerateRequestDto(request.productName(), categories, pricingModels));
     }
 
     private AlternativeSearchResponseDto getAlternativesFromProduct(Product product) {
