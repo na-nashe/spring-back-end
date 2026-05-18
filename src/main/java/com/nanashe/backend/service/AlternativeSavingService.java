@@ -67,14 +67,21 @@ public class AlternativeSavingService {
         log.debug("createProduct: looking up category='{}', country='{}'", event.productCategory(), event.productCountry());
 
         Optional<Category> category = categoryRepository.findByNameIgnoreCase(event.productCategory());
-        Optional<Country> country = countryRepository.findByNameIgnoreCase(event.productCountry());
 
-        if (category.isEmpty() || country.isEmpty()) {
-            log.warn("Cannot create product '{}': category='{}' found={}, country='{}' found={}",
-                    event.productName(), event.productCategory(), category.isPresent(),
-                    event.productCountry(), country.isPresent());
+        if (category.isEmpty()) {
+            log.warn("Cannot create product '{}': category='{}' not found",
+                    event.productName(), event.productCategory());
             return null;
         }
+
+        Country country = countryRepository.findByNameIgnoreCase(event.productCountry())
+                .orElseGet(() -> {
+                    log.info("Creating new country '{}'", event.productCountry());
+                    return countryRepository.save(Country.builder()
+                            .name(event.productCountry())
+                            .isFriendly(true)
+                            .build());
+                });
 
         List<Alias> aliases = event.aliases().stream()
                 .map(Alias::fromString)
@@ -83,10 +90,10 @@ public class AlternativeSavingService {
         Product saved = productRepository.save(Product.builder()
                 .name(event.productName())
                 .category(category.get())
-                .origin(country.get())
+                .origin(country)
                 .aliases(aliases)
                 .build());
-                
+
         log.info("Created new product id={} name='{}' with {} alias(es): {}",
                 saved.getId(), saved.getName(), aliases.size(), event.aliases());
         return saved;
