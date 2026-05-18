@@ -15,6 +15,7 @@ import com.nanashe.backend.repository.CategoryRepository;
 import com.nanashe.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class AlternativeService {
         return new AlternativeSummaryResponseDto(alternativeRepository.count());
     }
 
+    @Transactional(readOnly = true)
     public AlternativeSearchResponseDto findAlternatives(SearchRequestDto request) {
         return productRepository.findByAliasesName(request.productName())
                 .filter(Product::hasAlternatives)
