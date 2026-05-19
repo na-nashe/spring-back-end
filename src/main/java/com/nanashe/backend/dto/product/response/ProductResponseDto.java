@@ -1,9 +1,11 @@
-package com.nanashe.backend.dto.alternatives.response;
+package com.nanashe.backend.dto.product.response;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+
+import com.nanashe.backend.dto.alternatives.response.AlternativeResponseDto;
 
 @Getter
 @Builder

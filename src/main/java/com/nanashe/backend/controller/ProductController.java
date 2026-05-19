@@ -1,6 +1,6 @@
 package com.nanashe.backend.controller;
 
-import com.nanashe.backend.dto.alternatives.response.ProductResponseDto;
+import com.nanashe.backend.dto.product.response.ProductResponseDto;
 import com.nanashe.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

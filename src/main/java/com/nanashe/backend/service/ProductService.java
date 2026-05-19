@@ -1,7 +1,7 @@
 package com.nanashe.backend.service;
 
 import com.nanashe.backend.dto.alternatives.response.AlternativeResponseDto;
-import com.nanashe.backend.dto.alternatives.response.ProductResponseDto;
+import com.nanashe.backend.dto.product.response.ProductResponseDto;
 import com.nanashe.backend.entity.Product;
 import com.nanashe.backend.repository.CategoryRepository;
 import com.nanashe.backend.repository.ProductRepository;
