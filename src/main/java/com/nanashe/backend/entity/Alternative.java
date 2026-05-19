@@ -2,6 +2,8 @@ package com.nanashe.backend.entity;
 
 import com.nanashe.backend.entity.enums.PricingModel;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,7 @@ public class Alternative {
     private Country origin;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "pricing_model", columnDefinition = "pricing_model_enum")
     private PricingModel pricingModel;
 
