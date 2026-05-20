@@ -19,6 +19,9 @@ public class UserController {
 
     @GetMapping("/user/info")
     public UserResponseDto getUserProfile(Authentication authentication) {
+        if (authentication == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         UUID userId = UUID.fromString(authentication.getName());
         return userRepository.findById(userId)
                 .map(u -> new UserResponseDto(u.getId(), u.getUsername(), u.getEmail(), u.getAvatar(), u.getJoined()))
