@@ -32,6 +32,12 @@ public class AuthController {
         userService.signUp(dto);
     }
 
+    @GetMapping("/verify")
+    public ResponseEntity<Void> verifyEmail(@RequestParam String token) {
+        userService.verifyEmail(token);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/accesstoken/refresh")
     public ResponseEntity<Void> refreshAccessToken(
             @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
