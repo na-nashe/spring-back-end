@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,7 +57,8 @@ public class AlternativeSavingService {
             return;
         }
 
-        product.addAlternatives(newAlternatives);
+        List<Alternative> savedAlternatives = alternativeRepository.saveAll(newAlternatives);
+        product.addAlternatives(savedAlternatives);
         productRepository.save(product);
 
         log.info("Saved {} alternative(s) and linked them to product '{}' for aliases {}",
@@ -67,14 +69,21 @@ public class AlternativeSavingService {
         log.debug("createProduct: looking up category='{}', country='{}'", event.productCategory(), event.productCountry());
 
         Optional<Category> category = categoryRepository.findByNameIgnoreCase(event.productCategory());
-        Optional<Country> country = countryRepository.findByNameIgnoreCase(event.productCountry());
 
-        if (category.isEmpty() || country.isEmpty()) {
-            log.warn("Cannot create product '{}': category='{}' found={}, country='{}' found={}",
-                    event.productName(), event.productCategory(), category.isPresent(),
-                    event.productCountry(), country.isPresent());
+        if (category.isEmpty()) {
+            log.warn("Cannot create product '{}': category='{}' not found",
+                    event.productName(), event.productCategory());
             return null;
         }
+
+        Country country = countryRepository.findByNameIgnoreCase(event.productCountry())
+                .orElseGet(() -> {
+                    log.info("Creating new country '{}'", event.productCountry());
+                    return countryRepository.save(Country.builder()
+                            .name(event.productCountry())
+                            .isFriendly(false)
+                            .build());
+                });
 
         List<Alias> aliases = event.aliases().stream()
                 .map(Alias::fromString)
@@ -83,10 +92,10 @@ public class AlternativeSavingService {
         Product saved = productRepository.save(Product.builder()
                 .name(event.productName())
                 .category(category.get())
-                .origin(country.get())
+                .origin(country)
                 .aliases(aliases)
                 .build());
-                
+
         log.info("Created new product id={} name='{}' with {} alias(es): {}",
                 saved.getId(), saved.getName(), aliases.size(), event.aliases());
         return saved;
@@ -95,12 +104,16 @@ public class AlternativeSavingService {
     private List<Alternative> findNewAlternatives(KafkaAlternativesEvent event) {
         String[] names = event.alternatives().stream()
                 .map(AlternativeResponseDto::getName)
+                .filter(Objects::nonNull)
                 .toArray(String[]::new);
+
+        if (names.length == 0) return List.of();
+
         Set<String> newNames = new HashSet<>(alternativeRepository.findNewAlternativeNames(names));
 
         return event.alternatives()
                 .stream()
-                .filter(alternative -> newNames.contains(alternative.getName()))
+                .filter(alternative -> alternative.getName() != null && newNames.contains(alternative.getName()))
                 .map(dto -> toAlternative(dto, event))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -112,21 +125,32 @@ public class AlternativeSavingService {
                 event.productCategory(), dto.getCountry(), dto.getName());
 
         Optional<Category> category = categoryRepository.findByNameIgnoreCase(event.productCategory());
-        Optional<Country> country = countryRepository.findByNameIgnoreCase(dto.getCountry());
 
-        if (category.isEmpty() || country.isEmpty()) {
-            log.warn("Skipping alternative '{}': category='{}' found={}, country='{}' found={}",
-                    dto.getName(), event.productCategory(), category.isPresent(), dto.getCountry(), country.isPresent());
+        if (category.isEmpty()) {
+            log.warn("Skipping alternative '{}': category='{}' not found",
+                    dto.getName(), event.productCategory());
             return Optional.empty();
         }
+
+        Country country = countryRepository.findByNameIgnoreCase(dto.getCountry())
+                .orElseGet(() -> {
+                    log.info("Creating new country '{}'", dto.getCountry());
+                    return countryRepository.save(Country.builder()
+                            .name(dto.getCountry())
+                            .isFriendly(true)
+                            .build());
+                });
 
         Alternative alt = Alternative.builder()
                 .name(dto.getName())
                 .category(category.get())
-                .origin(country.get())
+                .origin(country)
                 .description(dto.getDescription())
                 .url(dto.getUrl())
+                .pricingModel(dto.getPricingModel())
                 .aiGenerated(true)
+                .isCashbackAvailable(dto.getIsCashbackAvailable())
+                .cashbackInfo(dto.getCashbackInfo())
                 .build();
         log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), event.productCategory(), dto.getCountry());
         return Optional.of(alt);
