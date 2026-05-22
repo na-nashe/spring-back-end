@@ -63,7 +63,9 @@ public class AlternativeService {
                 alt.getDescription(),
                 alt.getUrl(),
                 alt.getOrigin().getName(),
-                alt.getPricingModel()
+                alt.getPricingModel(),
+                alt.getIsCashbackAvailable(),
+                alt.getCashbackInfo()
         );
     }
 }
