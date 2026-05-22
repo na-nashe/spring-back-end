@@ -149,6 +149,8 @@ public class AlternativeSavingService {
                 .url(dto.getUrl())
                 .pricingModel(dto.getPricingModel())
                 .aiGenerated(true)
+                .isCashbackAvailable(dto.getIsCashbackAvailable())
+                .cashbackInfo(dto.getCashbackInfo())
                 .build();
         log.debug("Built alternative: name='{}', category='{}', country='{}'", alt.getName(), event.productCategory(), dto.getCountry());
         return Optional.of(alt);

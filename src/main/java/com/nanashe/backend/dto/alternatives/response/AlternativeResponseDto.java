@@ -18,4 +18,6 @@ public class AlternativeResponseDto {
     private String url;
     private String country;
     private PricingModel pricingModel;
+    private Boolean isCashbackAvailable;
+    private String cashbackInfo;
 }

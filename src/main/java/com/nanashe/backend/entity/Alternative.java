@@ -47,4 +47,10 @@ public class Alternative {
 
     @Column(name = "ai_generated")
     private Boolean aiGenerated;
+
+    @Column(name = "is_cashback_available")
+    private Boolean isCashbackAvailable;
+
+    @Column(name = "cashback_info", columnDefinition = "TEXT")
+    private String cashbackInfo;
 }
