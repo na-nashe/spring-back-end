@@ -21,6 +21,9 @@ public class EmailService {
     @Value("${app.base-url}")
     private String baseUrl;
 
+    @Value("${spring.mail.username}")
+    private String mailFrom;
+
     public void sendVerificationEmail(String to, String token) {
         String link = baseUrl + "/auth/verify?token=" + token;
         String html = loadTemplate("templates/email-verification.html")
@@ -30,6 +33,7 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+            helper.setFrom(mailFrom);
             helper.setTo(to);
             helper.setSubject("Verify your email");
             helper.setText(html, true);
