@@ -1,6 +1,6 @@
 package com.nanashe.backend.dto.alternatives.response;
 
-import com.nanashe.backend.entity.enums.PricingModel;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,11 +13,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class AlternativeResponseDto {
+    private Integer id;
     private String name;
     private String description;
     private String url;
     private String country;
-    private PricingModel pricingModel;
+    @JsonProperty("pricing_model")
+    private String pricingModel;
     private Boolean isCashbackAvailable;
     private String cashbackInfo;
 }

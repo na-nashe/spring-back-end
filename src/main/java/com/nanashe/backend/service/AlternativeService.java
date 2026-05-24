@@ -58,14 +58,15 @@ public class AlternativeService {
     }
 
     private AlternativeResponseDto toResponseDto(Alternative alt) {
-        return new AlternativeResponseDto(
-                alt.getName(),
-                alt.getDescription(),
-                alt.getUrl(),
-                alt.getOrigin().getName(),
-                alt.getPricingModel(),
-                alt.getIsCashbackAvailable(),
-                alt.getCashbackInfo()
-        );
+        return AlternativeResponseDto.builder()
+                .id(alt.getId())
+                .name(alt.getName())
+                .description(alt.getDescription())
+                .url(alt.getUrl())
+                .country(alt.getOrigin().getName())
+                .pricingModel(alt.getPricingModel() != null ? alt.getPricingModel().name().toLowerCase() : null)
+                .isCashbackAvailable(alt.getIsCashbackAvailable())
+                .cashbackInfo(alt.getCashbackInfo())
+                .build();
     }
 }
