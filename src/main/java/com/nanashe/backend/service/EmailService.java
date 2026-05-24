@@ -1,16 +1,13 @@
 package com.nanashe.backend.service;
 
+import com.nanashe.backend.util.HtmlTemplateLoader;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +21,18 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String mailFrom;
 
+    @Value("${email.send.enabled}")
+    private boolean emailSendingEnabled;
+
+    private static final String HTML_TEMPLATE_NAME = "email-verification.html";
+
     public void sendVerificationEmail(String to, String token) {
-        String link = baseUrl + "/auth/verify?token=" + token;
-        String html = loadTemplate("templates/email-verification.html")
+        if (!emailSendingEnabled) {
+            return;
+        }
+
+        String link = baseUrl + "/auth/email/verify?token=" + token;
+        String html = HtmlTemplateLoader.loadTemplate(HTML_TEMPLATE_NAME)
                 .replace("{link}", link);
 
         try {
@@ -35,19 +41,11 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
             helper.setFrom(mailFrom);
             helper.setTo(to);
-            helper.setSubject("Verify your email");
+            helper.setSubject("Підтвердіть вашу електронну пошту");
             helper.setText(html, true);
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send verification email", e);
-        }
-    }
-
-    private String loadTemplate(String path) {
-        try {
-            return new ClassPathResource(path).getContentAsString(StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load email template: " + path, e);
         }
     }
 }

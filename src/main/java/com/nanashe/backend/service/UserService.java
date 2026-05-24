@@ -26,10 +26,10 @@ public class UserService {
 
     public void signUp(SignUpRequestDto dto) {
         if (userRepository.existsByEmail(dto.email())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Аккаунт з такою електронною поштою вже існує");
         }
         if (userRepository.existsByUsername(dto.username())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "This username is already taken");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Аккаунт з таким ім'я вже існує");
         }
         String token = UUID.randomUUID().toString();
         User user = User.builder()
@@ -48,10 +48,10 @@ public class UserService {
     public SignInResult signIn(SignInRequestDto dto) {
         User user = userRepository.findByEmail(dto.email())
                 .filter(u -> passwordEncoder.matches(dto.password(), u.getPasswordHash()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Неправильний логін або пароль"));
 
         if (!user.isEmailVerified()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Please verify your email before signing in");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Будь ласка, підтвердіть свою електронну пошту");
         }
 
         return createTokenPair(user);
