@@ -147,7 +147,9 @@ public class AlternativeSavingService {
                 .origin(country)
                 .description(dto.getDescription())
                 .url(dto.getUrl())
-                .pricingModel(dto.getPricingModel())
+                .pricingModel(dto.getPricingModel() != null
+                        ? com.nanashe.backend.entity.enums.PricingModel.valueOf(dto.getPricingModel().toUpperCase())
+                        : null)
                 .aiGenerated(true)
                 .isCashbackAvailable(dto.getIsCashbackAvailable())
                 .cashbackInfo(dto.getCashbackInfo())
