@@ -6,7 +6,9 @@ import com.nanashe.backend.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,9 +23,12 @@ public class CategoryService {
     }
 
     private CategoryResponseDto toDto(Category c) {
-        List<CategoryResponseDto> children = c.getChildren() == null
-                ? List.of()
-                : c.getChildren().stream().map(this::toDto).toList();
+        List<CategoryResponseDto> children = Optional.ofNullable(c.getChildren())
+                .stream()
+                .flatMap(Collection::stream)
+                .map(this::toDto)
+                .toList();
+
         return new CategoryResponseDto(c.getId(), c.getName(), c.getIcon(), children);
     }
 }

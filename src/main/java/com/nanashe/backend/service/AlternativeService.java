@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class AlternativeService {
         List<String> categories = categoryRepository.findByChildrenIsEmpty().stream()
                 .map(Category::getName)
                 .toList();
-        List<String> pricingModels = List.of(PricingModel.values()).stream()
+        List<String> pricingModels = Stream.of(PricingModel.values())
                 .map(Enum::name)
                 .toList();
         return aiServiceClient.generateAlternatives(new AiGenerateRequestDto(request.productName(), categories, pricingModels));
