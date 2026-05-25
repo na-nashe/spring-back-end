@@ -14,6 +14,7 @@ public class SecurityConstants {
             "/categories",
             "/auth/**",
             "/products",
-            "/products/**"
+            "/products/**",
+            "/cashback/**"
     );
 }

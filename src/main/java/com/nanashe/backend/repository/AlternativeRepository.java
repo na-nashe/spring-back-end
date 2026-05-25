@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface AlternativeRepository extends JpaRepository<Alternative, Integer> {
 
+    List<Alternative> findByIsCashbackAvailableTrue();
+
+    List<Alternative> findByIsCashbackAvailableTrueAndNameContainingIgnoreCase(String name);
+
     @Query(value = """
             SELECT alt_name
             FROM unnest(:alternatives) AS alt_name
