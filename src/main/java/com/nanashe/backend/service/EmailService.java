@@ -31,7 +31,7 @@ public class EmailService {
             return;
         }
 
-        String link = baseUrl + "/auth/email/verify?token=" + token;
+        String link = baseUrl + "/email/verify?token=" + token;
         String html = HtmlTemplateLoader.loadTemplate(HTML_TEMPLATE_NAME)
                 .replace("{link}", link);
 
