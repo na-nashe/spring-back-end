@@ -10,10 +10,10 @@ public class SecurityConstants {
     public static final String BEARER_PREFIX = "Bearer ";
 
     public static final List<String> WHITE_LIST = List.of(
-            "/alternatives/*",
+            "/alternatives/**",
             "/categories",
-            "/auth/*",
+            "/auth/**",
             "/products",
-            "/products/*"
+            "/products/**"
     );
 }

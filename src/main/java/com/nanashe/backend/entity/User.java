@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "users")
@@ -34,6 +35,16 @@ public class User {
 
     @Column(nullable = false)
     private OffsetDateTime joined;
+
+    @Column(name = "email_verified", nullable = false)
+    @ColumnDefault("false")
+    private boolean emailVerified;
+
+    @Column(name = "verification_token", length = 36)
+    private String verificationToken;
+
+    @Column(name = "verification_token_expires_at")
+    private OffsetDateTime verificationTokenExpiresAt;
 
     @OneToMany(mappedBy = "user")
     private List<UserSaved> savedAlternatives;
